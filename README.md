@@ -14,5 +14,5 @@ Including only inPath defaults outPath to recon.in in the current workspace.
 
 Example:
 Default input and output paths:python main.py
-Specifiec input path, default output path:python main.py C:\Users\Foo\Documents\yChartsChallenge\data.txt
+Specified input path, default output path:python main.py C:\Users\Foo\Documents\yChartsChallenge\data.txt
 Speficied input path and output paths:python main.py C:\Users\Foo\Documents\yChartsChallenge\data.txt C:\Users\Foo\Downloads\recon.txt
