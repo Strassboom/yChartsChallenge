@@ -1,5 +1,7 @@
-def dayReconciler(filepath):
-    with open(filepath,'r') as r:
+import sys
+
+def dayReconciler(inPath,outPath):
+    with open(inPath,'r') as r:
         # lines will help us keep track of when we're moving to the next record set
         lines = [x.strip() for x in r.readlines()]
         # The variable i will help us terminate each while loop
@@ -56,9 +58,12 @@ def dayReconciler(filepath):
             if item[1] != 0:
                 reconOut += f"{item[0]} {item[1]}\n"
         # Write reconOut to recon.out
-        with open('recon.out','w+') as w:
+        with open(outPath,'w+') as w:
             w.write(reconOut)
 
 def main():
-    dayReconciler('data.txt')
+    # Read in optional file input and output paths
+    inPath = sys.argv[1] if len(sys.argv) > 1 else 'recon.in'
+    outPath = sys.argv[2] if len(sys.argv) > 2 else 'recon.out'
+    dayReconciler(inPath,outPath)
 main()
