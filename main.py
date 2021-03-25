@@ -1,4 +1,4 @@
-def daySeparator(filepath):
+def dayReconciler(filepath):
     with open(filepath,'r') as r:
         # lines will help us keep track of when we're moving to the next record set
         lines = [x.strip() for x in r.readlines()]
@@ -55,5 +55,5 @@ def daySeparator(filepath):
             w.write(reconOut)
 
 def main():
-    daySeparator('data.txt')
+    dayReconciler('data.txt')
 main()
