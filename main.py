@@ -2,14 +2,12 @@ def daySeparator(filepath):
     with open(filepath,'r') as r:
         # lines will help us keep track of when we're moving to the next record set
         lines = [x.strip() for x in r.readlines()]
-        i = 0
-        firstDay = lines[i]
-        days = dict()
-        days[firstDay] = dict()
-        i += 1
+        # The variable i will help us terminate each while loop
+        i = 1
+        firstDay = dict()
         while lines[i] != '':
             stockRecord = lines[i].split(' ')
-            days[firstDay][stockRecord[0]] = float(stockRecord[1])
+            firstDay[stockRecord[0]] = float(stockRecord[1])
             i += 1
         i += 1
         transactionHeader = lines[i]
@@ -19,22 +17,22 @@ def daySeparator(filepath):
         while lines[i] != '':
             transactionRecord = lines[i].split(' ')
             symbol,transactionCode,shares,totalValue = transactionRecord
-            if symbol not in days[firstDay].keys():
-                days[firstDay][symbol] = 0
+            if symbol not in firstDay.keys():
+                firstDay[symbol] = 0
             if symbol == 'Cash':
                 if transactionCode == 'DEPOSIT':
-                    days[firstDay][symbol] += float(totalValue)
+                    firstDay[symbol] += float(totalValue)
                 elif transactionCode == 'FEE':
-                    days[firstDay][symbol] -= float(totalValue)
+                    firstDay[symbol] -= float(totalValue)
             else:
                 if transactionCode == 'SELL':
-                    days[firstDay][symbol] -= float(shares)
-                    days[firstDay]['Cash'] += float(totalValue)
+                    firstDay[symbol] -= float(shares)
+                    firstDay['Cash'] += float(totalValue)
                 elif transactionCode == 'BUY':
-                    days[firstDay][symbol] += float(shares)
-                    days[firstDay]['Cash'] -= float(totalValue)
+                    firstDay[symbol] += float(shares)
+                    firstDay['Cash'] -= float(totalValue)
                 elif transactionCode == 'DIVIDEND':
-                    days[firstDay]['Cash'] += float(totalValue)
+                    firstDay['Cash'] += float(totalValue)
             i += 1
         i += 2
         reconOut = ''
@@ -42,15 +40,15 @@ def daySeparator(filepath):
             stockRecord = lines[i].split(' ')
             symbol,shares = stockRecord
             try:
-                if float(shares) != days[firstDay][symbol]:
-                    nextLine = f"{symbol} {float(shares) - days[firstDay][symbol]}\n"
+                if float(shares) != firstDay[symbol]:
+                    nextLine = f"{symbol} {float(shares) - firstDay[symbol]}\n"
                     reconOut += nextLine
-                days[firstDay].pop(symbol)
+                firstDay.pop(symbol)
             except KeyError:
-                if symbol not in days[firstDay].keys():
+                if symbol not in firstDay.keys():
                     reconOut += f"{symbol} {float(shares)}\n"
             i += 1
-        for item in days[firstDay].items():
+        for item in firstDay.items():
             if item[1] != 0:
                 reconOut += f"{item[0]} {item[1]}\n"
         with open('recon.out','w+') as w:
