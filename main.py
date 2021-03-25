@@ -6,7 +6,6 @@ def daySeparator(filepath):
         lines = [x.strip() for x in r.readlines()]
         i = 0
         firstDay = lines[i]
-        dayList = [firstDay]
         days = dict()
         days[firstDay] = dict()
         i += 1
@@ -39,12 +38,22 @@ def daySeparator(filepath):
                 elif transactionCode == 'DIVIDEND':
                     days[firstDay]['Cash'] += float(totalValue)
             i += 1
-        i += 1
-        nextDay = lines[i]
-        dayList.append(nextDay)
-        days[nextDay] = dict()
-
-        print(lines)
+        i += 2
+        while i < len(lines):
+            stockRecord = lines[i].split(' ')
+            symbol,shares = stockRecord
+            try:
+                if float(shares) != days[firstDay][symbol]:
+                    print(symbol,float(shares) - days[firstDay][symbol])
+                days[firstDay].pop(symbol)
+            except KeyError:
+                if symbol not in days[firstDay].keys():
+                    print(symbol,shares)
+            i += 1
+        for item in days[firstDay].items():
+            if item[1] != 0:
+                print(item[0],item[1])
+        #print(lines)
 
 def main():
     daySeparator('data.txt')
