@@ -4,16 +4,16 @@ def dayReconciler(filepath):
         lines = [x.strip() for x in r.readlines()]
         # The variable i will help us terminate each while loop
         i = 1
+
+        # Assign the shares on day 0 to a key of their respective symbol in a dictionary
         firstDay = dict()
         while lines[i] != '':
             stockRecord = lines[i].split(' ')
             firstDay[stockRecord[0]] = float(stockRecord[1])
             i += 1
-        i += 1
-        transactionHeader = lines[i]
-        transactions = dict()
-        transactions[transactionHeader] = dict()
-        i += 1
+        i += 2
+
+        # Perform transaction operations on the symbols and shares in day 0
         while lines[i] != '':
             transactionRecord = lines[i].split(' ')
             symbol,transactionCode,shares,totalValue = transactionRecord
@@ -35,6 +35,8 @@ def dayReconciler(filepath):
                     firstDay['Cash'] += float(totalValue)
             i += 1
         i += 2
+
+        # Compare Day 0 after transactions with records for Day 1 and append the error value record to reconOut if inequal
         reconOut = ''
         while i < len(lines):
             stockRecord = lines[i].split(' ')
@@ -48,9 +50,12 @@ def dayReconciler(filepath):
                 if symbol not in firstDay.keys():
                     reconOut += f"{symbol} {float(shares)}\n"
             i += 1
+        
+        # Append the value record of any stock symbols from Day 0 not in Day 1, as this indicates further inconsistencies
         for item in firstDay.items():
             if item[1] != 0:
                 reconOut += f"{item[0]} {item[1]}\n"
+        # Write reconOut to recon.out
         with open('recon.out','w+') as w:
             w.write(reconOut)
 
